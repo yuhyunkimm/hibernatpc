@@ -122,17 +122,18 @@ public class BoardRepositoryTest extends MyDummyEntity {
     @Test
     public void findAll_test() {
         // given
-        List<User> userList = Arrays.asList(newUser("ssar"), newUser("cos"));
-        // stream : OS단위의 오브젝트
-        userList.stream().forEach((user) -> {
-            userRepository.save(user);
+        User user = newUser("ssar");
+        User userPS = userRepository.save(user);
+        List<Board> boardList = Arrays.asList(newBoard("ssar", userPS), newBoard("cos", userPS));
+        boardList.stream().forEach((board) -> {
+            boardRepository.save(board);
         });
 
         // when
-        List<User> userListPS = userRepository.findAll();
+        List<Board> boardListPS = boardRepository.findAll();
 
         // then
-        Assertions.assertThat(userListPS.size()).isEqualTo(2);
+        Assertions.assertThat(boardListPS.size()).isEqualTo(2);
 
     }
 }

@@ -21,7 +21,7 @@ public class MyDummyEntity {
 
     protected Board newBoard(String title, User userPS) {
         if (userPS.getId() == null) {
-            System.out.println("영속화해서 넣어");
+            System.out.println("테스트 : 영속화해서 넣어");
             return null;
         }
 
