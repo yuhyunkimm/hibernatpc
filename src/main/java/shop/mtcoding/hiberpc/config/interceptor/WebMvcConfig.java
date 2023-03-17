@@ -11,7 +11,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(null)
+        registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/s/*"); // s(secuir)로 시작하면 인증이 필요하다
 
     }

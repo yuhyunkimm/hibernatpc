@@ -20,10 +20,16 @@ public class MyBlackListFilter implements Filter {
         // String v = br.readLine();
         // if (v == null) break;
         // }
+        String value = request.getParameter("value");
+
+        if (value == null) {
+            response.setContentType("text/plain; charset=utf-8");
+            response.getWriter().println("value 파라메터를 전송해주세요.");
+            return;
+        }
 
         // 주의 : 버퍼를 비우면, 컨트롤러에서 버퍼를 읽지 못한다
         // 데이터 타입 : x-www-form-urlencoded
-        String value = request.getParameter("value");
         if (value.equals("babo")) {
             response.setContentType("text/plain; charset=utf-8");
             response.getWriter().println("당신은 블랙리스트가 되었습니다.");
