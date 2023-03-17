@@ -1,5 +1,8 @@
 package shop.mtcoding.hiberpc.model.user;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.assertj.core.api.Assertions;
@@ -91,5 +94,40 @@ public class UserRepositoryTest extends MyDummyEntity {
         // then
         User deleteUserPS = userRepository.findById(1);
         Assertions.assertThat(deleteUserPS).isNull();
+    }
+
+    @Test
+    public void findById_test() {
+        // given1 - DB에 영속화
+        User user = newUser("ssar");
+        userRepository.save(user);
+
+        // given2
+        int id = 1;
+
+        // when
+        User userPS = userRepository.findById(id);
+
+        // then
+        Assertions.assertThat(userPS.getUsername()).isEqualTo("ssar");
+
+    }
+
+    @Test
+    public void findAll_test() {
+        // given
+        List<User> userList = Arrays.asList(newUser("ssar"), newUser("cos"));
+        // stream : OS단위의 오브젝트
+        userList.stream().forEach((user) -> {
+            userRepository.save(user);
+        });
+
+        // when
+        List<User> userListPS = userRepository.findAll();
+        System.out.println("테스트 : " + userListPS);
+
+        // then
+        Assertions.assertThat(userListPS.size()).isEqualTo(2);
+
     }
 }
