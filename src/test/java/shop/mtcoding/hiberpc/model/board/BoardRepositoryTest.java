@@ -86,6 +86,8 @@ public class BoardRepositoryTest extends MyDummyEntity {
         Board boardPS = boardRepository.save(board);
 
         // given2 - request 데이터
+        // em.clear(); 비워지고 보드만 셀렉트 된다 => 테스트 빼곤 사용할 일이 없다
+        // @ManyToOne(fetch = FetchType.LAZY) 전략을 바꾸고
         int id = 1;
         Board findBoardPS = boardRepository.findById(id); // 캐싱
 
@@ -103,17 +105,17 @@ public class BoardRepositoryTest extends MyDummyEntity {
         User user = newUser("ssar");
         User userPS = userRepository.save(user);
         Board board = newBoard("제목1", userPS);
-        Board boardPS = boardRepository.save(board);
+        boardRepository.save(board);
 
         // given2
-        em.clear();
         int id = 1;
-        Board findBoardPS = boardRepository.findById(id);
 
         // when
+        Board findBoardPS = boardRepository.findById(id);
 
         // then
-        Assertions.assertThat(userPS.getUsername()).isEqualTo("ssar");
+        Assertions.assertThat(findBoardPS.getUser().getUsername()).isEqualTo("ssar");
+        Assertions.assertThat(findBoardPS.getTitle()).isEqualTo("제목1");
 
     }
 
