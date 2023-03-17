@@ -3,6 +3,7 @@ package shop.mtcoding.hiberpc.model.user;
 import javax.persistence.EntityManager;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,6 +19,11 @@ public class UserRepositoryTest extends MyDummyEntity {
 
     @Autowired
     private EntityManager em;
+
+    @BeforeEach
+    public void setUp() {
+        em.createNativeQuery("ALTER TABLE user_tb AUTO_INCREMENT = 1").executeUpdate();
+    }
 
     @Test
     public void save_test() {
@@ -67,5 +73,23 @@ public class UserRepositoryTest extends MyDummyEntity {
         // then
         User updateUserPS = userRepository.findById(1);
         Assertions.assertThat(updateUserPS.getPassword()).isEqualTo("5678");
+    }
+
+    @Test
+    public void delete_test() { // flush test
+        // given1 - DB에 영속화
+        User user = newUser("ssar");
+        userRepository.save(user);
+
+        // given2 - request 데이터
+        int id = 1;
+        User findUserPS = userRepository.findById(id); // 캐싱
+
+        // when
+        userRepository.delete(findUserPS);
+
+        // then
+        User deleteUserPS = userRepository.findById(1);
+        Assertions.assertThat(deleteUserPS).isNull();
     }
 }
