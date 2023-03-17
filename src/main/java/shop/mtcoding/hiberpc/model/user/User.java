@@ -16,9 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-@ToString
 @NoArgsConstructor // 없으면 하이버네이트가 뉴를 못함
 @Getter
 @Setter
@@ -48,6 +46,12 @@ public class User {
     public void update(String password, String email) {
         this.password = password;
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
+                + ", createdAt=" + createdAt + "]";
     }
 
 }

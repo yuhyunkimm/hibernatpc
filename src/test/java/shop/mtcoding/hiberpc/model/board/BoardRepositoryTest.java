@@ -12,12 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import shop.mtcoding.hiberpc.config.dummy.MyDummyEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Import(UserRepository.class)
+import shop.mtcoding.hiberpc.config.dummy.MyDummyEntity;
+import shop.mtcoding.hiberpc.model.user.User;
+import shop.mtcoding.hiberpc.model.user.UserRepository;
+
+@Import({ BoardRepository.class, UserRepository.class })
 @DataJpaTest // 이걸 띄우면 repository가 뜨지 않아서 Import도 같이 띄워줘야 한다
-public class UserRepositoryTest extends MyDummyEntity {
-    @Autowired // test는 무조건 autowird로
+public class BoardRepositoryTest extends MyDummyEntity {
+    @Autowired
+    private BoardRepository boardRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -26,15 +33,21 @@ public class UserRepositoryTest extends MyDummyEntity {
     @BeforeEach
     public void setUp() {
         em.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN id RESTART WITH 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE board_tb ALTER COLUMN id RESTART WITH 1").executeUpdate();
     }
 
     @Test
     public void save_test() {
-        // given
+        // given1
         User user = newUser("ssar");
+        User userPS = userRepository.save(user);
+
+        // given2
+        Board board = newBoard("제목1", userPS);
 
         // when
-        User userPS = userRepository.save(user);
+        Board boardPS = boardRepository.save(board);
+        // System.out.println("테스트 : "+new ObjectMapper().writeValueAsString(boardPS));
 
         // then
         Assertions.assertThat(userPS.getId()).isEqualTo(1);
