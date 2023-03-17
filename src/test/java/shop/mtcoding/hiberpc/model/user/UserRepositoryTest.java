@@ -1,5 +1,7 @@
 package shop.mtcoding.hiberpc.model.user;
 
+import javax.persistence.EntityManager;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,9 @@ import shop.mtcoding.hiberpc.config.dummy.MyDummyEntity;
 public class UserRepositoryTest extends MyDummyEntity {
     @Autowired // test는 무조건 autowird로
     private UserRepository userRepository;
+
+    @Autowired
+    private EntityManager em;
 
     @Test
     public void save_test() {
@@ -43,5 +48,24 @@ public class UserRepositoryTest extends MyDummyEntity {
         // then
         Assertions.assertThat(updateUserPS.getPassword()).isEqualTo("5678");
         Assertions.assertThat(updateUserPS.getEmail()).isEqualTo("ssar@gamil.com");
+    }
+
+    @Test
+    public void update_dutty_checking_test() { // flush test
+        // given1 - DB에 영속화
+        User user = newUser("ssar");
+        User userPS = userRepository.save(user);
+
+        // given2 - request 데이터
+        String password = "5678";
+        String email = "ssar@gamil.com";
+
+        // when
+        userPS.update(password, email);
+        em.flush();
+
+        // then
+        User updateUserPS = userRepository.findById(1);
+        Assertions.assertThat(updateUserPS.getPassword()).isEqualTo("5678");
     }
 }
