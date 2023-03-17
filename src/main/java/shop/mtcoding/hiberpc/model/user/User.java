@@ -42,4 +42,10 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    // 명확하게 업데이트 할 것을 지정해준다
+    public void update(String password, String email) {
+        this.password = password;
+        this.email = email;
+    }
+
 }

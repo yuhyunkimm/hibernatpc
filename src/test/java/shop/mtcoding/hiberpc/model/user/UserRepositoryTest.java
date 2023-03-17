@@ -21,7 +21,27 @@ public class UserRepositoryTest extends MyDummyEntity {
 
         // when
         User userPS = userRepository.save(user);
+
         // then
         Assertions.assertThat(userPS.getId()).isEqualTo(1);
+    }
+
+    @Test
+    public void update_test() {
+        // given1 - DB에 영속화
+        User user = newUser("ssar");
+        User userPS = userRepository.save(user);
+
+        // given2 - request 데이터
+        String password = "5678";
+        String email = "ssar@gamil.com";
+
+        // when
+        userPS.update(password, email);
+        User updateUserPS = userRepository.save(userPS);
+
+        // then
+        Assertions.assertThat(updateUserPS.getPassword()).isEqualTo("5678");
+        Assertions.assertThat(updateUserPS.getEmail()).isEqualTo("ssar@gamil.com");
     }
 }
