@@ -1,4 +1,6 @@
-package shop.mtcoding.hiberpc.model.user;
+package shop.mtcoding.hiberpc.model.board;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.hiberpc.config.dummy.MyDummyEntity;
 import shop.mtcoding.hiberpc.model.user.User;
@@ -48,9 +48,11 @@ public class BoardRepositoryTest extends MyDummyEntity {
         // when
         Board boardPS = boardRepository.save(board);
         // System.out.println("테스트 : "+new ObjectMapper().writeValueAsString(boardPS));
+        System.out.println("테스트 : " + boardPS);
 
         // then
-        Assertions.assertThat(userPS.getId()).isEqualTo(1);
+        assertThat(boardPS.getId()).isEqualTo(1);
+        assertThat(boardPS.getUser().getId()).isEqualTo(1);
     }
 
     @Test
@@ -58,68 +60,57 @@ public class BoardRepositoryTest extends MyDummyEntity {
         // given1 - DB에 영속화
         User user = newUser("ssar");
         User userPS = userRepository.save(user);
+        Board board = newBoard("제목1", userPS);
+        Board boardPS = boardRepository.save(board);
 
         // given2 - request 데이터
-        String password = "5678";
-        String email = "ssar@gamil.com";
+        String title = "제목12";
+        String content = "내용12";
 
         // when
-        userPS.update(password, email);
-        User updateUserPS = userRepository.save(userPS);
+        boardPS.update(title, content);
+        em.flush(); // 트랜젝션 종료시 자동 발동
 
         // then
-        Assertions.assertThat(updateUserPS.getPassword()).isEqualTo("5678");
-        Assertions.assertThat(updateUserPS.getEmail()).isEqualTo("ssar@gamil.com");
-    }
-
-    @Test
-    public void update_dutty_checking_test() { // flush test
-        // given1 - DB에 영속화
-        User user = newUser("ssar");
-        User userPS = userRepository.save(user);
-
-        // given2 - request 데이터
-        String password = "5678";
-        String email = "ssar@gamil.com";
-
-        // when
-        userPS.update(password, email);
-        em.flush();
-
-        // then
-        User updateUserPS = userRepository.findById(1);
-        Assertions.assertThat(updateUserPS.getPassword()).isEqualTo("5678");
+        Board findBoardPS = boardRepository.findById(1);
+        Assertions.assertThat(findBoardPS.getTitle()).isEqualTo("제목12");
+        Assertions.assertThat(findBoardPS.getContent()).isEqualTo("내용12");
     }
 
     @Test
     public void delete_test() { // flush test
         // given1 - DB에 영속화
         User user = newUser("ssar");
-        userRepository.save(user);
+        User userPS = userRepository.save(user);
+        Board board = newBoard("제목1", userPS);
+        Board boardPS = boardRepository.save(board);
 
         // given2 - request 데이터
         int id = 1;
-        User findUserPS = userRepository.findById(id); // 캐싱
+        Board findBoardPS = boardRepository.findById(id); // 캐싱
 
         // when
-        userRepository.delete(findUserPS);
+        boardRepository.delete(findBoardPS);
 
         // then
-        User deleteUserPS = userRepository.findById(1);
-        Assertions.assertThat(deleteUserPS).isNull();
+        Board deleteBoardPS = boardRepository.findById(1);
+        Assertions.assertThat(deleteBoardPS).isNull();
     }
 
     @Test
     public void findById_test() {
         // given1 - DB에 영속화
         User user = newUser("ssar");
-        userRepository.save(user);
+        User userPS = userRepository.save(user);
+        Board board = newBoard("제목1", userPS);
+        Board boardPS = boardRepository.save(board);
 
         // given2
+        em.clear();
         int id = 1;
+        Board findBoardPS = boardRepository.findById(id);
 
         // when
-        User userPS = userRepository.findById(id);
 
         // then
         Assertions.assertThat(userPS.getUsername()).isEqualTo("ssar");

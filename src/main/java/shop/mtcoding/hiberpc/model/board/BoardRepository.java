@@ -38,7 +38,7 @@ public class BoardRepository {
     }
 
     public void delete(Board board) {
-        em.remove(em);
+        em.remove(board);
     }
 
 }
