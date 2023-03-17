@@ -22,7 +22,7 @@ public class UserRepositoryTest extends MyDummyEntity {
 
     @BeforeEach
     public void setUp() {
-        em.createNativeQuery("ALTER TABLE user_tb AUTO_INCREMENT = 1").executeUpdate();
+        em.createNativeQuery("ALTER TABLE user_tb ALTER COLUMN id RESTART WITH 1").executeUpdate();
     }
 
     @Test

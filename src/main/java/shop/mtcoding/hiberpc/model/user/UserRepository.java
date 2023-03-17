@@ -38,7 +38,7 @@ public class UserRepository {
     }
 
     public void delete(User user) {
-        em.remove(em);
+        em.remove(user);
     }
 
 }
