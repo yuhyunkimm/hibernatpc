@@ -1,4 +1,4 @@
-package shop.mtcoding.hiberpc.config.interceptor;
+package shop.mtcoding.hiberpc.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
